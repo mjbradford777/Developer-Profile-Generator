@@ -1,0 +1,24 @@
+{
+  "name": "developer-profile-generator",
+  "version": "1.0.0",
+  "description": "A program to quickly generate pdfs of developers' profile information",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mjbradford777/Developer-Profile-Generator.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mjbradford777/Developer-Profile-Generator/issues"
+  },
+  "homepage": "https://github.com/mjbradford777/Developer-Profile-Generator#readme",
+  "dependencies": {
+    "axios": "^0.19.1",
+    "electron-html-to": "^2.6.0",
+    "inquirer": "^7.0.3"
+  }
+}
