@@ -1,33 +1,49 @@
 const inquirer = require('inquirer');
+const path = require("path");
 const fs = require('fs');
 const axios = require('axios');
-const electron = require('electron-html-to');
+const electronHTML = require('electron-html-to');
+let colorBackground;
 
 inquirer
-    .prompt({
+    .prompt([{
         message: "Enter your Github username: ",
         name: "username"
-    })
-    .then(function({ username }) {
+    },
+    {
+        message: 'Enter your favorite color: ',
+        name: 'color'
+    }])
+    .then(function({ username }, color) {
+        console.log(username);
         const queryUrl = `https://api.github.com/users/${username}`;
-        const queryURL2 = `https://api.github.com/users/${username}/repos?per_page=100`
+        colorBackground = color;
+        console.log(color);
+        console.log(colorBackground);
 
         axios.get(queryUrl).then(function(response) {
-            console.log(response);
-        })
+            return  writeAndAppendToFile(response);
+            }).then(html => {
+                console.log('converting');
+                    const conversion = electronHTML({
+                      converterPath: electronHTML.converters.PDF
+                    })
 
-        axios.get(queryURL2).then(function(response) {
-            console.log(response);
-        })
+
+                    conversion({ html }, function(err, result) {
+                        if (err) {
+                          return console.error(err);
+                        }
+              
+                        result.stream.pipe(
+                          fs.createWriteStream(path.join(__dirname, "resume.pdf"))
+                        );
+                        conversion.kill();
+                      });
+            })
     })
 
-//data.avatar_url
-//data.name
-//data.location
-//data.html_url
-//data.blog
-//data.bio
-//data.public_repos
-//data.followers
-//data.length => data[i].stargazers_count
-//data.following
+
+const writeAndAppendToFile = (response) => {
+    return `<main style="background-color: ${colorBackground};>\n <img src="${response.data.avatar_url}">\n <p>${response.data.name}</p>\n <p>${response.data.location}</p>\n <a href="${response.data.html_url}"></a>\n <a href="${response.data.blog}"></a>\n <p>${response.data.bio}</p>\n <p>Public Repositories: ${response.data.public_repos}</p>\n <p>Followers: ${response.data.followers}</p>\n <p>Following: ${response.data.following}</p>\n </main>`; 
+}
