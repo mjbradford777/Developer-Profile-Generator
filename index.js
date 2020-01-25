@@ -11,14 +11,16 @@ inquirer
         name: "username"
     },
     {
+        name: 'color',
         message: 'Enter your favorite color: ',
-        name: 'color'
+        default: 'blue'
     }])
-    .then(function({ username }, color) {
-        console.log(username);
-        const queryUrl = `https://api.github.com/users/${username}`;
-        colorBackground = color;
-        console.log(color);
+    .then(answers => {
+        console.log(answers.username);
+        console.log(answers.color);
+        const queryUrl = `https://api.github.com/users/${answers.username}`;
+        colorBackground = answers.color;
+        console.log(answers.color);
         console.log(colorBackground);
 
         axios.get(queryUrl).then(function(response) {
@@ -45,5 +47,5 @@ inquirer
 
 
 const writeAndAppendToFile = (response) => {
-    return `<main style="background-color: ${colorBackground};>\n <img src="${response.data.avatar_url}">\n <p>${response.data.name}</p>\n <p>${response.data.location}</p>\n <a href="${response.data.html_url}"></a>\n <a href="${response.data.blog}"></a>\n <p>${response.data.bio}</p>\n <p>Public Repositories: ${response.data.public_repos}</p>\n <p>Followers: ${response.data.followers}</p>\n <p>Following: ${response.data.following}</p>\n </main>`; 
+    return `<body style="text-align: center;">\n <div style="margin: 10px; padding: 10px; border:3px solid ${colorBackground};"><p> ${response.data.name}</p>\n</div>\n <img src="${response.data.avatar_url}">\n <div style="margin: 10px; padding: 10px; border:3px solid ${colorBackground};"> <p>${response.data.location}</p>\n <a href="${response.data.html_url}"></a>\n <a href="${response.data.blog}"></a>\n <p>${response.data.bio}</p>\n <p>Public Repositories: ${response.data.public_repos}</p>\n <p>Followers: ${response.data.followers}</p>\n <p>Following: ${response.data.following}</p>\n </div> </body>`; 
 }
